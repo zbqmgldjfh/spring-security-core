@@ -14,8 +14,10 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import shine.me.springsecuritycore.repository.UserRepository;
 import shine.me.springsecuritycore.security.common.FormAuthenticationDetailsSource;
+import shine.me.springsecuritycore.security.handler.CustomAuthenticationSuccessHandler;
 import shine.me.springsecuritycore.security.provider.CustomAuthenticationProvider;
 import shine.me.springsecuritycore.security.service.CustomUserDetailsService;
 
@@ -46,6 +48,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .loginProcessingUrl("/login_proc")
                 .authenticationDetailsSource(authenticationDetailsSource())
                 .defaultSuccessUrl("/")
+                .successHandler(authenticationSuccessHandler())
                 .permitAll()
         ;
     }
@@ -73,5 +76,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Bean
     public AuthenticationDetailsSource authenticationDetailsSource() {
         return new FormAuthenticationDetailsSource();
+    }
+
+    @Bean
+    public AuthenticationSuccessHandler authenticationSuccessHandler() {
+        return new CustomAuthenticationSuccessHandler();
     }
 }
