@@ -14,10 +14,12 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import shine.me.springsecuritycore.repository.UserRepository;
 import shine.me.springsecuritycore.security.common.FormAuthenticationDetailsSource;
+import shine.me.springsecuritycore.security.handler.CustomAccessDeniedHandler;
 import shine.me.springsecuritycore.security.handler.CustomAuthenticationFailureHandler;
 import shine.me.springsecuritycore.security.handler.CustomAuthenticationSuccessHandler;
 import shine.me.springsecuritycore.security.provider.CustomAuthenticationProvider;
@@ -48,12 +50,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .formLogin()
                 .loginPage("/login")
                 .loginProcessingUrl("/login_proc")
-                .authenticationDetailsSource(authenticationDetailsSource())
                 .defaultSuccessUrl("/")
+                .authenticationDetailsSource(authenticationDetailsSource())
                 .successHandler(authenticationSuccessHandler())
                 .failureHandler(authenticationFailureHandler())
                 .permitAll()
         ;
+
+        http.exceptionHandling()
+                .accessDeniedHandler(accessDeniedHandler());
     }
 
     @Override
@@ -89,5 +94,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Bean
     public AuthenticationFailureHandler authenticationFailureHandler() {
         return new CustomAuthenticationFailureHandler();
+    }
+
+    @Bean
+    public AccessDeniedHandler accessDeniedHandler() {
+        CustomAccessDeniedHandler customAccessDeniedHandler = new CustomAccessDeniedHandler();
+        customAccessDeniedHandler.setErrorPage("/denied");
+        return customAccessDeniedHandler;
     }
 }
