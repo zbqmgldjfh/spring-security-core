@@ -10,7 +10,9 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import shine.me.springsecuritycore.security.common.AjaxLoginAuthenticationEntryPoint;
 import shine.me.springsecuritycore.security.filter.AjaxLoginProcessingFilter;
+import shine.me.springsecuritycore.security.handler.AjaxAccessDeniedHandler;
 import shine.me.springsecuritycore.security.handler.AjaxAuthenticationFailureHandler;
 import shine.me.springsecuritycore.security.handler.AjaxAuthenticationSuccessHandler;
 import shine.me.springsecuritycore.security.provider.AjaxAuthenticationProvider;
@@ -29,11 +31,17 @@ public class AjaxSecurityConfig extends WebSecurityConfigurerAdapter {
         http
                 .antMatcher("/api/**")
                 .authorizeRequests()
+                .antMatchers("/api/messages").hasRole("MANAGER")
                 .anyRequest().authenticated();
 
         http
                 .addFilterBefore(ajaxLoginProcessingFilter(), UsernamePasswordAuthenticationFilter.class)
                 .csrf().disable();
+
+        http
+                .exceptionHandling()
+                .authenticationEntryPoint(new AjaxLoginAuthenticationEntryPoint())
+                .accessDeniedHandler(ajaxAccessDeniedHandler());
     }
 
     @Bean
@@ -58,5 +66,10 @@ public class AjaxSecurityConfig extends WebSecurityConfigurerAdapter {
     @Bean
     public AjaxAuthenticationFailureHandler ajaxAuthenticationFailureHandler() {
         return new AjaxAuthenticationFailureHandler();
+    }
+
+    @Bean
+    public AjaxAccessDeniedHandler ajaxAccessDeniedHandler() {
+        return new AjaxAccessDeniedHandler();
     }
 }

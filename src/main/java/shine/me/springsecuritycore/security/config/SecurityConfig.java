@@ -29,7 +29,6 @@ import shine.me.springsecuritycore.security.service.CustomUserDetailsService;
 
 @Order(1)
 @RequiredArgsConstructor
-@Configuration
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
