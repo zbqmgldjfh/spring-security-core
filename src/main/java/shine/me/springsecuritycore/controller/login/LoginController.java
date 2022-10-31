@@ -8,7 +8,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import shine.me.springsecuritycore.domain.Account;
+import shine.me.springsecuritycore.domain.entity.Account;
 import shine.me.springsecuritycore.security.token.AjaxAuthenticationToken;
 
 import javax.servlet.http.HttpServletRequest;

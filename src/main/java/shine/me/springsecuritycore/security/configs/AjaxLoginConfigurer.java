@@ -1,4 +1,5 @@
-package shine.me.springsecuritycore.security.config;
+package shine.me.springsecuritycore.security.configs;
+
 
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.web.HttpSecurityBuilder;
@@ -31,7 +32,7 @@ public final class AjaxLoginConfigurer<H extends HttpSecurityBuilder<H>> extends
     @Override
     public void configure(H http) {
 
-        if(authenticationManager == null){
+        if (authenticationManager == null) {
             authenticationManager = http.getSharedObject(AuthenticationManager.class);
         }
         getAuthenticationFilter().setAuthenticationManager(authenticationManager);
@@ -48,13 +49,8 @@ public final class AjaxLoginConfigurer<H extends HttpSecurityBuilder<H>> extends
         if (rememberMeServices != null) {
             getAuthenticationFilter().setRememberMeServices(rememberMeServices);
         }
-        http.setSharedObject(AjaxLoginProcessingFilter.class,getAuthenticationFilter());
+        http.setSharedObject(AjaxLoginProcessingFilter.class, getAuthenticationFilter());
         http.addFilterBefore(getAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
-    }
-
-    @Override
-    public AjaxLoginConfigurer<H> loginPage(String loginPage) {
-        return super.loginPage(loginPage);
     }
 
     public AjaxLoginConfigurer<H> successHandlerAjax(AuthenticationSuccessHandler successHandler) {

@@ -7,8 +7,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import shine.me.springsecuritycore.domain.Account;
-import shine.me.springsecuritycore.domain.AccountDto;
+import shine.me.springsecuritycore.domain.entity.Account;
+import shine.me.springsecuritycore.domain.dto.AccountDto;
 import shine.me.springsecuritycore.service.UserService;
 
 @RequiredArgsConstructor
