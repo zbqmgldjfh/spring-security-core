@@ -25,12 +25,14 @@ import org.springframework.security.web.authentication.AuthenticationFailureHand
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
 import shine.me.springsecuritycore.security.common.FormWebAuthenticationDetailsSource;
+import shine.me.springsecuritycore.security.factory.UrlResourcesMapFactoryBean;
 import shine.me.springsecuritycore.security.handler.AjaxAuthenticationFailureHandler;
 import shine.me.springsecuritycore.security.handler.AjaxAuthenticationSuccessHandler;
 import shine.me.springsecuritycore.security.handler.FormAccessDeniedHandler;
 import shine.me.springsecuritycore.security.metadatasource.UrlFilterInvocationSecurityMetadataSource;
 import shine.me.springsecuritycore.security.provider.AjaxAuthenticationProvider;
 import shine.me.springsecuritycore.security.provider.FormAuthenticationProvider;
+import shine.me.springsecuritycore.service.SecurityResourceService;
 
 import java.util.Arrays;
 import java.util.List;
@@ -46,6 +48,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private AuthenticationSuccessHandler formAuthenticationSuccessHandler;
     @Autowired
     private AuthenticationFailureHandler formAuthenticationFailureHandler;
+    @Autowired
+    private SecurityResourceService securityResourceService;
 
     @Override
     public void configure(WebSecurity web) throws Exception {
@@ -67,7 +71,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(final HttpSecurity http) throws Exception {
         http
                 .authorizeRequests()
-                .antMatchers("/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .formLogin()
@@ -79,13 +82,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .permitAll()
                 .and()
                 .exceptionHandling()
-//                .authenticationEntryPoint(new AjaxLoginAuthenticationEntryPoint())
                 .authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint("/login"))
                 .accessDeniedPage("/denied")
                 .accessDeniedHandler(accessDeniedHandler())
-        .and()
-                .addFilterBefore(customFilterSecurityInterceptor(), FilterSecurityInterceptor.class)
-        ;
+                .and()
+                .addFilterAt(customFilterSecurityInterceptor(), FilterSecurityInterceptor.class);
 
         http.csrf().disable();
 
@@ -150,7 +151,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Bean
-    public FilterInvocationSecurityMetadataSource urlFilterInvocationSecurityMetadataSource() {
-        return new UrlFilterInvocationSecurityMetadataSource();
+    public FilterInvocationSecurityMetadataSource urlFilterInvocationSecurityMetadataSource() throws Exception {
+        return new UrlFilterInvocationSecurityMetadataSource(urlResourcesMapFactoryBean().getObject());
+    }
+
+    private UrlResourcesMapFactoryBean urlResourcesMapFactoryBean() {
+        return new UrlResourcesMapFactoryBean(securityResourceService);
     }
 }
