@@ -11,6 +11,7 @@ import shine.me.springsecuritycore.domain.dto.ResourcesDto;
 import shine.me.springsecuritycore.domain.entity.Resources;
 import shine.me.springsecuritycore.domain.entity.Role;
 import shine.me.springsecuritycore.repository.RoleRepository;
+import shine.me.springsecuritycore.security.metadatasource.UrlFilterInvocationSecurityMetadataSource;
 import shine.me.springsecuritycore.service.ResourcesService;
 import shine.me.springsecuritycore.service.RoleService;
 
@@ -25,6 +26,7 @@ public class ResourcesController {
     private final ResourcesService resourcesService;
     private final RoleRepository roleRepository;
     private final RoleService roleService;
+    private final UrlFilterInvocationSecurityMetadataSource filterInvocationSecurityMetadataSource;
 
     @GetMapping(value = "/admin/resources")
     public String getResources(Model model) throws Exception {
@@ -46,6 +48,7 @@ public class ResourcesController {
         resources.setRoleSet(roles);
 
         resourcesService.createResources(resources);
+        filterInvocationSecurityMetadataSource.reload();
 
         return "redirect:/admin/resources";
     }
@@ -84,6 +87,7 @@ public class ResourcesController {
 
         Resources resources = resourcesService.getResources(Long.valueOf(id));
         resourcesService.deleteResources(Long.valueOf(id));
+        filterInvocationSecurityMetadataSource.reload();
 
         return "redirect:/admin/resources";
     }
